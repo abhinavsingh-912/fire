@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up — DhamakaMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+        --primary: #ff4500;
+        --primary-dark: #cc3700;
+        --success: #00c853;
+        --danger: #ff1744;
+        --border: #e2e8f0;
+        --text: #1e293b;
+        --muted: #94a3b8;
+        --font: 'Poppins', sans-serif;
+    }
+
+    html, body {
+        font-family: var(--font);
+        min-height: 100%;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    }
+
+    /* ── Particles ── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .dot {
+        position: absolute; border-radius: 50%; opacity: 0.35;
+        animation: floatDot 7s ease-in-out infinite;
+    }
+    @keyframes floatDot {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-28px); }
+    }
+
+    /* ── Page layout ── */
+    .page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 30px 16px 50px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── Logo ── */
+    .logo-wrap { text-align: center; margin-bottom: 24px; }
+    .logo-wrap .em { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+    .logo-wrap h1 { color: #fff; font-size: 1.7rem; font-weight: 800; }
+    .logo-wrap h1 span { color: #ff6a33; }
+    .logo-wrap p { color: rgba(255,255,255,0.45); font-size: 0.82rem; margin-top: 3px; }
+
+    /* ── Card ── */
+    .card {
+        background: #fff;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+        overflow: hidden;
+    }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+        display: flex;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+        flex: 1; padding: 14px 10px; text-align: center;
+        font-size: 0.88rem; font-weight: 600; color: var(--muted);
+        background: none; border: none; cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s; font-family: var(--font);
+    }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+    .tab-btn i { margin-right: 5px; }
+
+    /* ── Panels (each tab is a panel) ── */
+    .panel { display: none; padding: 28px; }
+    .panel.active { display: block; }
+
+    /* ── Step pages inside a panel ── */
+    .step-page { display: none; }
+    .step-page.active { display: block; animation: popIn 0.25s ease; }
+    @keyframes popIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Step indicator ── */
+    .step-bar { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 22px; }
+    .s-dot {
+        width: 30px; height: 30px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; font-weight: 700;
+        background: #f1f5f9; color: var(--muted);
+        transition: all 0.3s;
+    }
+    .s-dot.active { background: var(--primary); color: #fff; box-shadow: 0 0 0 4px rgba(255,69,0,0.15); }
+    .s-dot.done { background: var(--success); color: #fff; }
+    .s-dot.done::after { content: "✓"; font-size: 0.8rem; }
+    .s-line { flex: 1; max-width: 50px; height: 2px; background: #f1f5f9; transition: all 0.3s; }
+    .s-line.done { background: var(--success); }
+
+    /* ── Section headings ── */
+    .panel-title { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+    .panel-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 20px; }
+
+    /* ── Forms ── */
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .f-group { margin-bottom: 15px; }
+    .f-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #475569; margin-bottom: 5px; }
+    .f-input-wrap { position: relative; }
+    .f-input-wrap .ico {
+        position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+        color: var(--muted); font-size: 0.88rem; pointer-events: none;
+    }
+    .f-input-wrap input {
+        width: 100%; padding: 11px 13px 11px 38px;
+        border: 2px solid var(--border); border-radius: 10px;
+        font-size: 0.9rem; font-family: var(--font);
+        color: var(--text); background: #f8fafc;
+        transition: all 0.2s;
+    }
+    .f-input-wrap input:focus {
+        outline: none; border-color: var(--primary);
+        background: #fff; box-shadow: 0 0 0 3px rgba(255,69,0,0.1);
+    }
+    .f-input-wrap input.is-error { border-color: var(--danger); background: #fff5f5; }
+    .f-input-wrap .eye {
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem;
+    }
+    .f-error { font-size: 0.72rem; color: var(--danger); margin-top: 4px; display: none; }
+    .f-error.show { display: block; }
+
+    /* ── OTP Digits ── */
+    .otp-note { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .otp-note strong { color: var(--primary); }
+    .otp-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 18px; }
+    .otp-d {
+        width: 46px; height: 52px;
+        border: 2px solid var(--border); border-radius: 10px;
+        text-align: center; font-size: 1.35rem; font-weight: 700;
+        color: var(--text); background: #f8fafc;
+        transition: all 0.2s; font-family: var(--font);
+    }
+    .otp-d:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(255,69,0,0.1); }
+    .otp-d.filled { border-color: var(--primary); background: #fff3e0; color: var(--primary); }
+    .otp-d.wrong { border-color: var(--danger); background: #fff5f5; animation: jiggle 0.4s; }
+    @keyframes jiggle {
+        0%,100% { transform: translateX(0); }
+        20% { transform: translateX(-6px); }
+        60% { transform: translateX(6px); }
+    }
+
+    /* ── Resend ── */
+    .resend-row { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 10px; margin-bottom: 16px; }
+    .resend-row button {
+        background: none; border: none; color: var(--primary);
+        font-weight: 600; cursor: pointer; font-size: 0.78rem; font-family: var(--font);
+    }
+    .resend-row button:disabled { color: var(--muted); cursor: default; }
+    #resendTimer, #sResendTimer { font-weight: 700; color: var(--primary); }
+
+    /* ── Buttons ── */
+    .btn {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        width: 100%; padding: 13px; border-radius: 10px;
+        font-size: 0.92rem; font-weight: 700; font-family: var(--font);
+        border: none; cursor: pointer; transition: all 0.22s;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,69,0,0.3); }
+    .btn-success { background: linear-gradient(135deg, var(--success), #009624); color: #fff; }
+    .btn-success:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,200,83,0.3); }
+    .btn-ghost {
+        background: #f1f5f9; color: #475569; margin-top: 10px;
+        border: none;
+    }
+    .btn-ghost:hover { background: #e2e8f0; }
+
+    /* ── Alert box ── */
+    .alert {
+        display: none; padding: 10px 14px; border-radius: 8px;
+        font-size: 0.8rem; margin-bottom: 14px;
+        align-items: center; gap: 8px;
+    }
+    .alert.show { display: flex; }
+    .alert-ok { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+    .alert-err { background: #fff1f2; border: 1px solid #fca5a5; color: #991b1b; }
+
+    /* ── Password strength ── */
+    .strength-bars { display: flex; gap: 4px; margin-top: 6px; margin-bottom: 2px; }
+    .sbar { flex: 1; height: 4px; border-radius: 4px; background: #f1f5f9; transition: background 0.3s; }
+    .sbar.w { background: var(--danger); }
+    .sbar.m { background: #fb923c; }
+    .sbar.s { background: var(--success); }
+    .slabel { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── Success state ── */
+    .success-box { text-align: center; padding: 10px 0 6px; }
+    .check-circle {
+        width: 72px; height: 72px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--success), #009624);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px; font-size: 1.9rem; color: #fff;
+        animation: popCircle 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes popCircle { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .success-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .success-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 22px; }
+
+    /* ── Demo hint ── */
+    .hint-box {
+        background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px;
+        padding: 10px 14px; text-align: center; font-size: 0.78rem; color: #9a3412;
+        margin-top: 16px;
+    }
+    .hint-box strong { color: var(--primary); letter-spacing: 2px; font-size: 0.92rem; }
+
+    /* ── Footer ── */
+    .auth-foot { text-align: center; margin-top: 20px; color: rgba(255,255,255,0.35); font-size: 0.73rem; }
+
+    /* ── Password strength hidden by default ── */
+    #strengthWrap { display: none; }
+
+    /* ── Spinner ── */
+    .spin { animation: spin360 0.7s linear infinite; display: inline-block; }
+    @keyframes spin360 { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 500px) {
+        .panel { padding: 20px 16px; }
+        .f-row { grid-template-columns: 1fr; }
+        .otp-d { width: 40px; height: 46px; font-size: 1.2rem; }
+        .otp-row { gap: 5px; }
+    }
+    </style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div class="page">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+        <span class="em">🎆</span>
+        <h1>Dhamaka<span>Mart</span></h1>
+        <p>India's #1 Firecracker Store</p>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+
+        <!-- Tab bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <button class="tab-btn" id="tabSignup" onclick="switchTab('signup')">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+        </div>
+
+        <!-- ═══════════════ LOGIN PANEL ═══════════════ -->
+        <div class="panel active" id="panelLogin">
+
+            <!-- LOGIN STEP 1: Phone -->
+            <div class="step-page active" id="lp1">
+                <div class="step-bar">
+                    <div class="s-dot active" id="ld1">1</div>
+                    <div class="s-line" id="ll1"></div>
+                    <div class="s-dot" id="ld2">2</div>
+                </div>
+                <div class="panel-title">Welcome Back 👋</div>
+                <div class="panel-sub">Enter your mobile number to receive an OTP</div>
+
+                <div class="alert alert-err" id="lAlert1">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="lAlert1Txt"></span>
+                </div>
+
+                <div class="f-group">
+                    <label>Mobile Number</label>
+                    <div class="f-input-wrap">
+                        <i class="ico fas fa-mobile-screen-button"></i>
+                        <input type="tel" id="lPhone" maxlength="10" inputmode="numeric"
+                            placeholder="10-digit mobile number"
+                            onkeydown="if(event.key==='Enter') sendLoginOTP()">
+                    </div>
+                    <div class="f-error" id="lPhoneErr">Enter a valid 10-digit number</div>
+                </div>
+
+                <button class="btn btn-primary" id="lSendBtn" onclick="sendLoginOTP()">
+                    <i class="fas fa-paper-plane"></i> Send OTP
+                </button>
+            </div>
+
+            <!-- LOGIN STEP 2: OTP -->
+            <div class="step-page" id="lp2">
+                <div class="step-bar">
+                    <div class="s-dot done" id="ld1b">✓</div>
+                    <div class="s-line done"></div>
+                    <div class="s-dot active">2</div>
+                </div>
+                <div class="panel-title">Enter OTP 🔢</div>
+                <p class="otp-note">OTP sent to <strong>+91 <span id="lPhoneShow"></span></strong>. Enter below to login.</p>
+
+                <div class="alert" id="lAlert2">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="lAlert2Txt"></span>
+                </div>
+
+                <div class="otp-row" id="lOtpRow">
+                    <input class="otp-d" id="lo0" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="lo1" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="lo2" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="lo3" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="lo4" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="lo5" maxlength="1" inputmode="numeric">
+                </div>
+
+                <button class="btn btn-success" id="lVerifyBtn" onclick="verifyLoginOTP()">
+                    <i class="fas fa-check-circle"></i> Verify & Login
+                </button>
+
+                <div class="resend-row">
+                    Didn't get it?
+                    <button id="lResendBtn" onclick="resendLoginOTP()" disabled>Resend OTP</button>
+                    <span id="resendTimer"></span>
+                </div>
+
+                <button class="btn btn-ghost" onclick="goBack('lp2','lp1')">
+                    <i class="fas fa-arrow-left"></i> Change Number
+                </button>
+            </div>
+
+            <!-- Demo hint -->
+            <div class="hint-box">
+                🔑 Demo OTP: <strong>123456</strong> &nbsp;·&nbsp; Works for any number
+            </div>
+        </div>
+
+        <!-- ═══════════════ SIGNUP PANEL ═══════════════ -->
+        <div class="panel" id="panelSignup">
+
+            <!-- SIGNUP STEP 1: Details -->
+            <div class="step-page active" id="sp1">
+                <div class="step-bar">
+                    <div class="s-dot active">1</div>
+                    <div class="s-line" id="sl1"></div>
+                    <div class="s-dot" id="sd2">2</div>
+                    <div class="s-line" id="sl2"></div>
+                    <div class="s-dot" id="sd3">3</div>
+                </div>
+                <div class="panel-title">Create Account 🚀</div>
+                <div class="panel-sub">Join DhamakaMart for exclusive deals</div>
+
+                <div class="f-row">
+                    <div class="f-group">
+                        <label>First Name</label>
+                        <div class="f-input-wrap">
+                            <i class="ico fas fa-user"></i>
+                            <input type="text" id="sFirst" placeholder="First name">
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label>Last Name</label>
+                        <div class="f-input-wrap">
+                            <i class="ico fas fa-user"></i>
+                            <input type="text" id="sLast" placeholder="Last name">
+                        </div>
+                    </div>
+                </div>
+                <div class="f-group">
+                    <label>Email Address</label>
+                    <div class="f-input-wrap">
+                        <i class="ico fas fa-envelope"></i>
+                        <input type="email" id="sEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="f-error" id="sEmailErr">Enter a valid email</div>
+                </div>
+                <div class="f-group">
+                    <label>Mobile Number</label>
+                    <div class="f-input-wrap">
+                        <i class="ico fas fa-mobile-screen-button"></i>
+                        <input type="tel" id="sPhone" maxlength="10" inputmode="numeric" placeholder="10-digit mobile number">
+                    </div>
+                    <div class="f-error" id="sPhoneErr">Enter a valid 10-digit number</div>
+                </div>
+                <div class="f-group">
+                    <label>Password</label>
+                    <div class="f-input-wrap">
+                        <i class="ico fas fa-lock"></i>
+                        <input type="password" id="sPass" placeholder="Create a strong password" oninput="checkStrength()">
+                        <button class="eye" type="button" onclick="toggleEye('sPass',this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div id="strengthWrap">
+                        <div class="strength-bars">
+                            <div class="sbar" id="sb1"></div>
+                            <div class="sbar" id="sb2"></div>
+                            <div class="sbar" id="sb3"></div>
+                            <div class="sbar" id="sb4"></div>
+                        </div>
+                        <div class="slabel" id="sStrLabel"></div>
+                    </div>
+                    <div class="f-error" id="sPassErr">Password must be at least 6 characters</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="signupNext()">
+                    Continue <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- SIGNUP STEP 2: OTP -->
+            <div class="step-page" id="sp2">
+                <div class="step-bar">
+                    <div class="s-dot done">✓</div>
+                    <div class="s-line done"></div>
+                    <div class="s-dot active">2</div>
+                    <div class="s-line" id="sl2b"></div>
+                    <div class="s-dot" id="sd3b">3</div>
+                </div>
+                <div class="panel-title">Verify Mobile 📲</div>
+                <p class="otp-note">OTP sent to <strong>+91 <span id="sPhoneShow"></span></strong>. Enter below to verify.</p>
+
+                <div class="alert" id="sAlert">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="sAlertTxt"></span>
+                </div>
+
+                <div class="otp-row" id="sOtpRow">
+                    <input class="otp-d" id="so0" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="so1" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="so2" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="so3" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="so4" maxlength="1" inputmode="numeric">
+                    <input class="otp-d" id="so5" maxlength="1" inputmode="numeric">
+                </div>
+
+                <button class="btn btn-success" onclick="signupVerify()">
+                    <i class="fas fa-check-circle"></i> Verify OTP
+                </button>
+
+                <div class="resend-row">
+                    Didn't get it?
+                    <button id="sResendBtn" onclick="signupResend()" disabled>Resend OTP</button>
+                    <span id="sResendTimer"></span>
+                </div>
+
+                <button class="btn btn-ghost" onclick="goBack('sp2','sp1')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+
+            <!-- SIGNUP STEP 3: Done -->
+            <div class="step-page" id="sp3">
+                <div class="step-bar">
+                    <div class="s-dot done">✓</div>
+                    <div class="s-line done"></div>
+                    <div class="s-dot done">✓</div>
+                    <div class="s-line done"></div>
+                    <div class="s-dot done">✓</div>
+                </div>
+                <div class="success-box">
+                    <div class="check-circle"><i class="fas fa-check"></i></div>
+                    <h3>Welcome to DhamakaMart! 🎉</h3>
+                    <p>Your account has been created successfully.<br>Ready to shop amazing firecrackers!</p>
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                        <i class="fas fa-store"></i> Start Shopping
+                    </button>
+                </div>
+            </div>
+
+            <!-- Demo hint -->
+            <div class="hint-box">
+                🔑 Demo OTP: <strong>123456</strong> &nbsp;·&nbsp; Works for any number
+            </div>
+        </div>
+
+    </div><!-- /card -->
+
+    <div class="auth-foot">&copy; 2026 DhamakaMart &bull; Secure &bull; Encrypted</div>
+
+</div><!-- /page -->
+
+<script>
+/* ================================================================
+   DhamakaMart — Login / Signup Page JS
+   ================================================================ */
+
+const DEMO_OTP = "123456";
+let activeOTP  = "";
+let loginPhone = "";
+let signupData = {};
+let lResendIv  = null;
+let sResendIv  = null;
+
+// ── Particles ──────────────────────────────────────────────────
+(function buildParticles() {
+    const colors = ["#ff4500","#ffd700","#ff6b35","#ff1744","#ffa500"];
+    const box = document.getElementById("particles");
+    for (let i = 0; i < 22; i++) {
+        const d = document.createElement("div");
+        d.className = "dot";
+        const size = Math.random() * 8 + 3;
+        d.style.cssText =
+            "width:" + size + "px;height:" + size + "px;" +
+            "background:" + colors[~~(Math.random() * colors.length)] + ";" +
+            "left:" + Math.random() * 100 + "%;" +
+            "top:" + Math.random() * 100 + "%;" +
+            "animation-delay:" + Math.random() * 7 + "s;" +
+            "animation-duration:" + (Math.random() * 4 + 5) + "s;";
+        box.appendChild(d);
+    }
+})();
+
+// ── OTP input wiring ─────────────────────────────────────────
+function wireOTP(prefix, count) {
+    for (let i = 0; i < count; i++) {
+        const el = document.getElementById(prefix + i);
+        if (!el) continue;
+
+        el.addEventListener("input", function() {
+            this.value = this.value.replace(/\D/g, "").slice(-1);
+            this.classList.toggle("filled", !!this.value);
+            this.classList.remove("wrong");
+            if (this.value && i < count - 1)
+                document.getElementById(prefix + (i + 1)).focus();
+        });
+
+        el.addEventListener("keydown", function(e) {
+            if (e.key === "Backspace") {
+                if (!this.value && i > 0) {
+                    const prev = document.getElementById(prefix + (i - 1));
+                    prev.value = "";
+                    prev.classList.remove("filled");
+                    prev.focus();
+                }
+            }
+            if (e.key === "Enter") {
+                if (prefix === "lo") verifyLoginOTP();
+                if (prefix === "so") signupVerify();
+            }
+        });
+
+        el.addEventListener("paste", function(e) {
+            e.preventDefault();
+            const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, count);
+            text.split("").forEach(function(ch, idx) {
+                const inp = document.getElementById(prefix + idx);
+                if (inp) { inp.value = ch; inp.classList.add("filled"); }
+            });
+            const last = document.getElementById(prefix + (text.length - 1));
+            if (last) last.focus();
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    wireOTP("lo", 6);
+    wireOTP("so", 6);
+});
+
+// ── Helpers ──────────────────────────────────────────────────
+function getEl(id) { return document.getElementById(id); }
+
+function getOTP(prefix, count) {
+    var s = "";
+    for (var i = 0; i < count; i++) s += (getEl(prefix + i)?.value || "");
+    return s;
+}
+
+function clearOTP(prefix, count) {
+    for (var i = 0; i < count; i++) {
+        var el = getEl(prefix + i);
+        if (el) { el.value = ""; el.classList.remove("filled","wrong"); }
+    }
+}
+
+function wrongOTP(prefix, count) {
+    for (var i = 0; i < count; i++) {
+        var el = getEl(prefix + i);
+        if (el) { el.classList.add("wrong"); el.value = ""; }
+    }
+    setTimeout(function() {
+        for (var i = 0; i < count; i++) {
+            var el = getEl(prefix + i);
+            if (el) el.classList.remove("wrong");
+        }
+        getEl(prefix + "0")?.focus();
+    }, 600);
+}
+
+function showStep(id) {
+    document.querySelectorAll(".step-page").forEach(function(el) {
+        el.classList.remove("active");
+    });
+    getEl(id).classList.add("active");
+    // Scroll card top into view on mobile
+    document.querySelector(".card").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function showAlert(elId, textId, msg, type) {
+    // type: "ok" or "err"
+    var el = getEl(elId);
+    var t  = getEl(textId);
+    if (!el || !t) return;
+    t.textContent = msg;
+    el.className = "alert alert-" + type + " show";
+}
+function clearAlert(elId) {
+    var el = getEl(elId);
+    if (el) el.classList.remove("show");
+}
+
+function goBack(from, to) {
+    showStep(to);
+}
+
+function startResend(timerId, btnId, seconds, onResend) {
+    var timerEl = getEl(timerId);
+    var btnEl   = getEl(btnId);
+    if (!timerEl || !btnEl) return;
+    btnEl.disabled = true;
+    var t = seconds || 30;
+    timerEl.textContent = "in " + t + "s";
+    var iv = setInterval(function() {
+        t--;
+        timerEl.textContent = t > 0 ? "in " + t + "s" : "";
+        if (t <= 0) {
+            clearInterval(iv);
+            btnEl.disabled = false;
+        }
+    }, 1000);
+    return iv;
+}
+
+// ── Tab switch ────────────────────────────────────────────────
+function switchTab(tab) {
+    getEl("tabLogin").classList.toggle("active", tab === "login");
+    getEl("tabSignup").classList.toggle("active", tab === "signup");
+    getEl("panelLogin").classList.toggle("active", tab === "login");
+    getEl("panelSignup").classList.toggle("active", tab === "signup");
+}
+
+// ── User store ────────────────────────────────────────────────
+function getUsers() { return JSON.parse(localStorage.getItem("dm_users") || "[]"); }
+function saveUsers(u) { localStorage.setItem("dm_users", JSON.stringify(u)); }
+
+// ════════════════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════════════════
+function sendLoginOTP() {
+    clearAlert("lAlert1");
+    var phone = getEl("lPhone").value.trim();
+    var phoneErr = getEl("lPhoneErr");
+    var inp = getEl("lPhone");
+
+    if (!/^\d{10}$/.test(phone)) {
+        phoneErr.classList.add("show");
+        inp.classList.add("is-error");
+        inp.focus();
+        return;
+    }
+    phoneErr.classList.remove("show");
+    inp.classList.remove("is-error");
+
+    var btn = getEl("lSendBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Sending...';
+
+    loginPhone = phone;
+    activeOTP  = DEMO_OTP;
+
+    setTimeout(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+        getEl("lPhoneShow").textContent = phone;
+        clearOTP("lo", 6);
+        showStep("lp2");
+        getEl("lo0").focus();
+        if (lResendIv) clearInterval(lResendIv);
+        lResendIv = startResend("resendTimer", "lResendBtn", 30);
+    }, 1000);
+}
+
+function verifyLoginOTP() {
+    clearAlert("lAlert2");
+    var entered = getOTP("lo", 6);
+    if (entered.length < 6) {
+        showAlert("lAlert2","lAlert2Txt","Please enter all 6 digits","err");
+        return;
+    }
+    var btn = getEl("lVerifyBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Verifying...';
+
+    setTimeout(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Login';
+
+        if (entered === activeOTP) {
+            // Save / find user
+            var users = getUsers();
+            var user  = users.find(function(u) { return u.phone === loginPhone; });
+            if (!user) {
+                user = { phone: loginPhone, name: "Customer", email: "", createdAt: new Date().toISOString() };
+                users.push(user);
+                saveUsers(users);
+            }
+            sessionStorage.setItem("dm_session", JSON.stringify(
+                Object.assign({}, user, { loggedIn: true, loginTime: Date.now() })
+            ));
+            showAlert("lAlert2","lAlert2Txt","✅ Verified! Redirecting...","ok");
+            setTimeout(function() { window.location.href = "index.html"; }, 700);
+        } else {
+            showAlert("lAlert2","lAlert2Txt","❌ Wrong OTP. Please try again.","err");
+            wrongOTP("lo", 6);
+        }
+    }, 1200);
+}
+
+function resendLoginOTP() {
+    activeOTP = DEMO_OTP;
+    clearOTP("lo", 6);
+    clearAlert("lAlert2");
+    showAlert("lAlert2","lAlert2Txt","OTP resent successfully!","ok");
+    setTimeout(function() { clearAlert("lAlert2"); }, 2000);
+    if (lResendIv) clearInterval(lResendIv);
+    lResendIv = startResend("resendTimer", "lResendBtn", 30);
+    getEl("lo0").focus();
+}
+
+// ════════════════════════════════════════════════════
+// SIGNUP
+// ════════════════════════════════════════════════════
+function signupNext() {
+    var first  = getEl("sFirst").value.trim();
+    var last   = getEl("sLast").value.trim();
+    var email  = getEl("sEmail").value.trim();
+    var phone  = getEl("sPhone").value.trim();
+    var pass   = getEl("sPass").value;
+    var valid  = true;
+
+    // Phone
+    if (!/^\d{10}$/.test(phone)) {
+        getEl("sPhoneErr").classList.add("show");
+        getEl("sPhone").classList.add("is-error");
+        valid = false;
+    } else {
+        getEl("sPhoneErr").classList.remove("show");
+        getEl("sPhone").classList.remove("is-error");
+    }
+
+    // Email
+    if (!email || !email.includes("@")) {
+        getEl("sEmailErr").classList.add("show");
+        getEl("sEmail").classList.add("is-error");
+        valid = false;
+    } else {
+        getEl("sEmailErr").classList.remove("show");
+        getEl("sEmail").classList.remove("is-error");
+    }
+
+    // Password
+    if (pass.length < 6) {
+        getEl("sPassErr").classList.add("show");
+        getEl("sPass").classList.add("is-error");
+        valid = false;
+    } else {
+        getEl("sPassErr").classList.remove("show");
+        getEl("sPass").classList.remove("is-error");
+    }
+
+    if (!valid) return;
+
+    signupData = { name: (first + " " + last).trim() || "Customer", email: email, phone: phone, pass: pass };
+    activeOTP  = DEMO_OTP;
+
+    getEl("sPhoneShow").textContent = phone;
+    clearOTP("so", 6);
+    clearAlert("sAlert");
+    showStep("sp2");
+    getEl("so0").focus();
+    if (sResendIv) clearInterval(sResendIv);
+    sResendIv = startResend("sResendTimer", "sResendBtn", 30);
+}
+
+function signupVerify() {
+    clearAlert("sAlert");
+    var entered = getOTP("so", 6);
+    if (entered.length < 6) {
+        showAlert("sAlert","sAlertTxt","Please enter all 6 digits","err");
+        return;
+    }
+    var btn = document.querySelector("#sp2 .btn-success");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Verifying...';
+
+    setTimeout(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
+
+        if (entered === activeOTP) {
+            var users = getUsers();
+            if (users.find(function(u) { return u.phone === signupData.phone; })) {
+                showAlert("sAlert","sAlertTxt","Account already exists. Please login.","err");
+                return;
+            }
+            var user = {
+                phone:     signupData.phone,
+                email:     signupData.email,
+                name:      signupData.name,
+                pass:      signupData.pass,
+                createdAt: new Date().toISOString()
+            };
+            users.push(user);
+            saveUsers(users);
+            sessionStorage.setItem("dm_session", JSON.stringify(
+                Object.assign({}, user, { loggedIn: true, loginTime: Date.now() })
+            ));
+            showStep("sp3");
+        } else {
+            showAlert("sAlert","sAlertTxt","❌ Wrong OTP. Try again.","err");
+            wrongOTP("so", 6);
+        }
+    }, 1200);
+}
+
+function signupResend() {
+    activeOTP = DEMO_OTP;
+    clearOTP("so", 6);
+    clearAlert("sAlert");
+    showAlert("sAlert","sAlertTxt","OTP resent!","ok");
+    setTimeout(function() { clearAlert("sAlert"); }, 2000);
+    if (sResendIv) clearInterval(sResendIv);
+    sResendIv = startResend("sResendTimer", "sResendBtn", 30);
+    getEl("so0").focus();
+}
+
+// ── Password strength ────────────────────────────────────────
+function checkStrength() {
+    var p = getEl("sPass").value;
+    var wrap = getEl("strengthWrap");
+    if (!p) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+    var score = 0;
+    if (p.length >= 6) score++;
+    if (p.length >= 10) score++;
+    if (/[A-Z]/.test(p) && /[0-9]/.test(p)) score++;
+    if (/[^A-Za-z0-9]/.test(p)) score++;
+    var cls = score <= 1 ? "w" : score <= 2 ? "m" : "s";
+    var labels = { w: "Weak", m: "Medium", s: "Strong 💪" };
+    ["sb1","sb2","sb3","sb4"].forEach(function(id, i) {
+        var el = getEl(id);
+        el.className = "sbar" + (i < score ? " " + cls : "");
+    });
+    getEl("sStrLabel").textContent = labels[cls];
+}
+
+function toggleEye(inputId, btn) {
+    var el = getEl(inputId);
+    var show = el.type === "password";
+    el.type = show ? "text" : "password";
+    btn.innerHTML = '<i class="fas fa-' + (show ? "eye-slash" : "eye") + '"></i>';
+}
+</script>
+</body>
+</html>

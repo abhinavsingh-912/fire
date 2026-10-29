@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — DhamakaMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4500;
+            --secondary: #1a1a2e;
+            --success: #00c853;
+            --danger: #ff1744;
+            --font: 'Poppins', sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font); min-height: 100vh; display: flex;
+            background: #0a0a1a;
+        }
+
+        /* ── Left Panel ── */
+        .left-panel {
+            width: 45%; background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 50px; position: relative; overflow: hidden;
+        }
+        .left-panel::before {
+            content: ""; position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .panel-logo { text-align: center; position: relative; z-index: 1; }
+        .panel-logo .icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+        .panel-logo h1 { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .panel-logo h1 span { color: #ff6a33; }
+        .panel-logo p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 40px; }
+
+        .admin-features { position: relative; z-index: 1; width: 100%; max-width: 320px; }
+        .feature-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px;
+            background: rgba(255,255,255,0.04); border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px;
+            color: rgba(255,255,255,0.7); font-size: 0.85rem;
+        }
+        .feature-item i { color: #ff6a33; font-size: 1.1rem; width: 20px; text-align: center; }
+
+        .security-badge {
+            position: relative; z-index: 1; margin-top: 30px;
+            background: rgba(255,69,0,0.1); border: 1px solid rgba(255,69,0,0.2);
+            border-radius: 50px; padding: 8px 20px; color: rgba(255,255,255,0.5);
+            font-size: 0.75rem; display: flex; align-items: center; gap: 8px;
+        }
+        .security-badge i { color: #ff4500; }
+
+        /* ── Right Panel (Login Form) ── */
+        .right-panel {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 40px; background: #0d0d1f;
+        }
+        .login-box { width: 100%; max-width: 420px; }
+
+        .login-header { margin-bottom: 32px; }
+        .login-header h2 { font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .login-header p { color: rgba(255,255,255,0.4); font-size: 0.88rem; }
+
+        .secure-line {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+            background: rgba(255,23,68,0.08); border: 1px solid rgba(255,23,68,0.15);
+            border-radius: 8px; padding: 10px 14px;
+            color: rgba(255,255,255,0.5); font-size: 0.78rem;
+        }
+        .secure-line i { color: #ff1744; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+        .input-wrap { position: relative; }
+        .input-wrap i.icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.2); font-size: 0.9rem; }
+        .input-wrap input {
+            width: 100%; padding: 13px 14px 13px 44px; border-radius: 10px;
+            border: 1.5px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04);
+            color: #fff; font-size: 0.92rem; font-family: var(--font);
+            transition: all 0.2s;
+        }
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+        .input-wrap input:focus { outline: none; border-color: var(--primary); background: rgba(255,69,0,0.05); box-shadow: 0 0 0 3px rgba(255,69,0,0.1); }
+        .input-wrap input.shake { animation: shake 0.4s; }
+        .input-wrap .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 0.9rem; }
+        .input-wrap .eye-btn:hover { color: rgba(255,255,255,0.6); }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        .attempts-bar {
+            display: flex; gap: 4px; margin-bottom: 18px;
+        }
+        .attempt-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); transition: all 0.3s;
+        }
+        .attempt-dot.used { background: var(--danger); }
+
+        .error-msg {
+            background: rgba(255,23,68,0.1); border: 1px solid rgba(255,23,68,0.2);
+            border-radius: 8px; padding: 10px 14px; color: #ff6b6b;
+            font-size: 0.82rem; margin-bottom: 16px; display: none;
+            animation: fadeIn 0.3s;
+        }
+        .error-msg.show { display: flex; align-items: center; gap: 8px; }
+
+        .success-msg {
+            background: rgba(0,200,83,0.1); border: 1px solid rgba(0,200,83,0.2);
+            border-radius: 8px; padding: 10px 14px; color: #69f0ae;
+            font-size: 0.82rem; margin-bottom: 16px; display: none;
+        }
+        .success-msg.show { display: flex; align-items: center; gap: 8px; }
+
+        .btn-login {
+            width: 100%; padding: 14px; border-radius: 10px; font-size: 0.95rem;
+            font-weight: 700; border: none; cursor: pointer; font-family: var(--font);
+            background: linear-gradient(135deg, var(--primary), #cc3700);
+            color: #fff; transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-login:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,69,0,0.35); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .login-footer { margin-top: 24px; text-align: center; }
+        .login-footer a { color: rgba(255,255,255,0.3); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+        .login-footer a:hover { color: var(--primary); }
+
+        /* Locked state */
+        .locked-screen {
+            text-align: center; display: none;
+        }
+        .lock-icon {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(255,23,68,0.1); border: 2px solid rgba(255,23,68,0.2);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 1.8rem; color: var(--danger);
+        }
+        .locked-screen h3 { color: #fff; margin-bottom: 8px; }
+        .locked-screen p { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-bottom: 6px; }
+        .countdown-lock { font-size: 1.4rem; font-weight: 800; color: var(--danger); margin-top: 12px; }
+
+        /* Spinner */
+        .fa-spinner { animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .left-panel { width: 100%; padding: 30px 20px; min-height: auto; }
+            .admin-features { display: none; }
+            .right-panel { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ LEFT PANEL ═══ -->
+    <div class="left-panel">
+        <div class="panel-logo">
+            <span class="icon">🎆</span>
+            <h1>Dhamaka<span>Mart</span></h1>
+            <p>Admin Control Center</p>
+        </div>
+        <div class="admin-features">
+            <div class="feature-item"><i class="fas fa-chart-line"></i> Real-time Sales Dashboard</div>
+            <div class="feature-item"><i class="fas fa-shopping-bag"></i> Order Management</div>
+            <div class="feature-item"><i class="fas fa-box-open"></i> Product Inventory</div>
+            <div class="feature-item"><i class="fas fa-users"></i> Customer Analytics</div>
+            <div class="feature-item"><i class="fas fa-credit-card"></i> Payment Tracking</div>
+            <div class="feature-item"><i class="fas fa-ticket"></i> Coupon Management</div>
+        </div>
+        <div class="security-badge">
+            <i class="fas fa-shield-halved"></i>
+            Restricted Area — Authorized Personnel Only
+        </div>
+    </div>
+
+    <!-- ═══ RIGHT PANEL ═══ -->
+    <div class="right-panel">
+        <div class="login-box">
+
+            <!-- Normal Login -->
+            <div id="loginScreen">
+                <div class="login-header">
+                    <h2>Admin Login</h2>
+                    <p>Enter your credentials to access the dashboard</p>
+                </div>
+
+                <div class="secure-line">
+                    <i class="fas fa-shield-halved"></i>
+                    This page is not linked from the public store
+                </div>
+
+                <!-- Attempt indicator -->
+                <div class="attempts-bar" id="attemptsBar">
+                    <div class="attempt-dot" id="ad1"></div>
+                    <div class="attempt-dot" id="ad2"></div>
+                    <div class="attempt-dot" id="ad3"></div>
+                    <div class="attempt-dot" id="ad4"></div>
+                    <div class="attempt-dot" id="ad5"></div>
+                </div>
+
+                <div class="error-msg" id="errorMsg">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText"></span>
+                </div>
+                <div class="success-msg" id="successMsg">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="successText"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Admin User ID</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user icon"></i>
+                        <input type="text" id="adminUserId" placeholder="Enter admin user ID" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock icon"></i>
+                        <input type="password" id="adminPass" placeholder="Enter admin password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+                        <button class="eye-btn" onclick="toggleAdminPass(this)" type="button"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button class="btn-login" id="loginBtn" onclick="doLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                </button>
+
+                <div class="login-footer">
+                    <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Store</a>
+                </div>
+            </div>
+
+            <!-- Locked Screen -->
+            <div class="locked-screen" id="lockedScreen">
+                <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                <h3>Account Locked</h3>
+                <p>Too many failed login attempts.</p>
+                <p>Please wait before trying again.</p>
+                <div class="countdown-lock" id="lockCountdown">5:00</div>
+                <p style="margin-top:12px;font-size:0.78rem;color:rgba(255,255,255,0.3);">
+                    <i class="fas fa-info-circle"></i> This incident has been logged.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    /* ═══════════════════════════════════
+       ADMIN LOGIN — Secure Auth
+       ═══════════════════════════════════ */
+
+    // ── Admin credentials (in production: stored server-side / hashed) ──
+    const ADMIN_ACCOUNTS = [
+        { userId: "admin",       password: "Admin@123",   name: "Super Admin",  role: "superadmin" },
+        { userId: "dhakakamart", password: "Store@2026",  name: "Store Manager", role: "manager"   },
+    ];
+
+    const MAX_ATTEMPTS = 5;
+    const LOCK_DURATION = 5 * 60 * 1000; // 5 minutes in ms
+    let failedAttempts = parseInt(sessionStorage.getItem("adm_fails") || "0");
+    let lockTimer = null;
+
+    // ── Check if already logged in ──
+    window.addEventListener("DOMContentLoaded", () => {
+        const adminSession = sessionStorage.getItem("dm_admin_session");
+        if (adminSession) {
+            const s = JSON.parse(adminSession);
+            if (s.loggedIn && Date.now() - s.loginTime < 8 * 60 * 60 * 1000) { // 8hr session
+                window.location.replace("admin.html");
+                return;
+            }
+        }
+        // Check lock
+        checkLock();
+        updateAttemptDots();
+        document.getElementById("adminUserId").focus();
+    });
+
+    function checkLock() {
+        const lockedUntil = parseInt(sessionStorage.getItem("adm_locked_until") || "0");
+        if (Date.now() < lockedUntil) {
+            showLockedScreen(lockedUntil);
+        }
+    }
+
+    function showLockedScreen(until) {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("lockedScreen").style.display = "block";
+        startLockCountdown(until);
+    }
+
+    function startLockCountdown(until) {
+        function tick() {
+            const remaining = until - Date.now();
+            if (remaining <= 0) {
+                sessionStorage.removeItem("adm_locked_until");
+                sessionStorage.removeItem("adm_fails");
+                failedAttempts = 0;
+                document.getElementById("loginScreen").style.display = "block";
+                document.getElementById("lockedScreen").style.display = "none";
+                updateAttemptDots();
+                return;
+            }
+            const m = Math.floor(remaining / 60000);
+            const s = Math.floor((remaining % 60000) / 1000);
+            document.getElementById("lockCountdown").textContent = `${m}:${String(s).padStart(2,"0")}`;
+            lockTimer = setTimeout(tick, 1000);
+        }
+        tick();
+    }
+
+    function updateAttemptDots() {
+        for (let i = 1; i <= 5; i++) {
+            const dot = document.getElementById("ad" + i);
+            if (dot) dot.classList.toggle("used", i <= failedAttempts);
+        }
+    }
+
+    function showError(msg) {
+        const box = document.getElementById("errorMsg");
+        document.getElementById("errorText").textContent = msg;
+        box.classList.add("show");
+        document.getElementById("successMsg").classList.remove("show");
+        // Shake inputs
+        document.getElementById("adminUserId").classList.add("shake");
+        document.getElementById("adminPass").classList.add("shake");
+        setTimeout(() => {
+            document.getElementById("adminUserId").classList.remove("shake");
+            document.getElementById("adminPass").classList.remove("shake");
+        }, 500);
+    }
+
+    function showSuccess(msg) {
+        document.getElementById("successMsg").classList.add("show");
+        document.getElementById("successText").textContent = msg;
+        document.getElementById("errorMsg").classList.remove("show");
+    }
+
+    function doLogin() {
+        const userId = document.getElementById("adminUserId").value.trim();
+        const pass = document.getElementById("adminPass").value;
+        const btn = document.getElementById("loginBtn");
+
+        if (!userId || !pass) { showError("Please enter User ID and Password"); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner"></i> Authenticating...';
+
+        // Simulate secure auth delay
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+
+            const account = ADMIN_ACCOUNTS.find(a => a.userId === userId && a.password === pass);
+
+            if (account) {
+                // ✅ SUCCESS
+                showSuccess(`Welcome back, ${account.name}! Redirecting...`);
+                sessionStorage.removeItem("adm_fails");
+                sessionStorage.removeItem("adm_locked_until");
+
+                // Save admin session
+                sessionStorage.setItem("dm_admin_session", JSON.stringify({
+                    userId: account.userId,
+                    name: account.name,
+                    role: account.role,
+                    loggedIn: true,
+                    loginTime: Date.now()
+                }));
+
+                // Log login event
+                const logs = JSON.parse(localStorage.getItem("dm_admin_logs") || "[]");
+                logs.push({ userId, event: "LOGIN_SUCCESS", time: new Date().toISOString(), ip: "127.0.0.1" });
+                localStorage.setItem("dm_admin_logs", JSON.stringify(logs));
+
+                setTimeout(() => { window.location.replace("admin.html"); }, 900);
+
+            } else {
+                // ❌ FAILED
+                failedAttempts++;
+                sessionStorage.setItem("adm_fails", failedAttempts);
+                updateAttemptDots();
+
+                const logs = JSON.parse(localStorage.getItem("dm_admin_logs") || "[]");
+                logs.push({ userId, event: "LOGIN_FAILED", time: new Date().toISOString() });
+                localStorage.setItem("dm_admin_logs", JSON.stringify(logs));
+
+                const remaining = MAX_ATTEMPTS - failedAttempts;
+
+                if (failedAttempts >= MAX_ATTEMPTS) {
+                    const until = Date.now() + LOCK_DURATION;
+                    sessionStorage.setItem("adm_locked_until", until);
+                    showLockedScreen(until);
+                } else {
+                    showError(`Invalid credentials. ${remaining} attempt${remaining !== 1 ? "s" : ""} remaining.`);
+                    document.getElementById("adminPass").value = "";
+                    document.getElementById("adminPass").focus();
+                }
+            }
+        }, 1200);
+    }
+
+    function toggleAdminPass(btn) {
+        const input = document.getElementById("adminPass");
+        const isPass = input.type === "password";
+        input.type = isPass ? "text" : "password";
+        btn.innerHTML = `<i class="fas fa-${isPass ? "eye-slash" : "eye"}"></i>`;
+    }
+    </script>
+</body>
+</html>
